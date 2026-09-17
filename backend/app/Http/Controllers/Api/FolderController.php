@@ -91,4 +91,24 @@ class FolderController extends Controller
             'message' => 'Folder berhasil dihapus'
         ], 200);
     }
+
+    /**
+     * Mengubah nama folder (Rename).
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $folder = Folder::findOrFail($id);
+        $folder->update([
+            'name' => $request->name
+        ]);
+
+        return response()->json([
+            'message' => 'Nama folder berhasil diperbarui',
+            'data' => $folder
+        ], 200);
+    }
 }

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class File extends Model
 {
-    protected $fillable = ['name', 'original_name', 'path', 'size', 'mime_type', 'folder_id', 'user_id'];
+    protected $fillable = ['name', 'title', 'path', 'mime_type', 'size', 'folder_id', 'department_id', 'user_id'];
 
     public function folder(): BelongsTo
     {

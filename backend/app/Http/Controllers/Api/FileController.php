@@ -15,6 +15,7 @@ class FileController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'title' => 'required|string|max:255',
             'file' => 'required|file|max:10240', // Maksimal 10MB per file
             'folder_id' => 'nullable|exists:folders,id',
             'department_id' => 'nullable|exists:departments,id',
@@ -33,6 +34,7 @@ class FileController extends Controller
         // Simpan informasi file ke database
         $file = File::create([
             'name' => $originalName,
+            'title' => $request->title,
             'path' => $path,
             'mime_type' => $mimeType,
             'size' => $size,
@@ -45,6 +47,29 @@ class FileController extends Controller
             'message' => 'File berhasil diunggah',
             'data' => $file
         ], 201);
+    }
+
+    /**
+     * Memperbarui informasi file (Edit File).
+     */
+    public function update(Request $request, $id)
+    {
+        $file = File::findOrFail($id);
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'department_id' => 'nullable|exists:departments,id',
+        ]);
+
+        $file->update([
+            'title' => $request->title,
+            'department_id' => $request->department_id ?? $file->department_id,
+        ]);
+
+        return response()->json([
+            'message' => 'Informasi file berhasil diperbarui',
+            'data' => $file
+        ], 200);
     }
 
     /**
