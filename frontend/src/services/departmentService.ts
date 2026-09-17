@@ -4,12 +4,15 @@ export interface Department {
     id: number;
     name: string;
     description?: string;
+    users_count?: number;
+    folders_count?: number;
+    files_count?: number;
 }
 
 export default {
     async getDepartments() {
         const response = await api.get('/api/departments');
-        return response.data;
+        return response.data.data; 
     },
     async createDepartment(data: { name: string; description?: string }) {
         const response = await api.post('/api/departments', data);
