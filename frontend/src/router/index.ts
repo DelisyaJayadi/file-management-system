@@ -3,6 +3,7 @@ import LoginView from '@/views/LoginView.vue';
 import { useAuthStore } from '@/stores/auth';
 import DashboardView from '@/views/DashboardView.vue';
 import DepartmentView from '@/views/DepartmentView.vue';
+import FolderView from '../views/FolderView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,6 +24,11 @@ const router = createRouter({
       path: '/departments',
       name: 'departments',
       component: DepartmentView,
+      meta: { requiresAuth: true },
+    },{
+      path: '/folders',
+      name: 'folders',
+      component: FolderView,
       meta: { requiresAuth: true },
     },
     {
