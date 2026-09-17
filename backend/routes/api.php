@@ -26,7 +26,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/folders/{id}', [FolderController::class, 'destroy']);
 
     // File Routes
+    Route::get('/files', [FileController::class, 'index']); 
     Route::post('/files', [FileController::class, 'store']);
+    Route::put('/files/{id}', [FileController::class, 'update']);
     Route::get('/files/{id}/download', [FileController::class, 'download']);
     Route::delete('/files/{id}', [FileController::class, 'destroy']);
 

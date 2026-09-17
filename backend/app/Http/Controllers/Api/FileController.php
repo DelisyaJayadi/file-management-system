@@ -16,37 +16,39 @@ class FileController extends Controller
     {
         $request->validate([
             'title' => 'required|string|max:255',
-            'file' => 'required|file|max:10240', // Maksimal 10MB per file
+            'file' => 'required|file|max:10240', // sesuaikan ukuran maksimal
+            'department_id' => 'required|exists:departments,id',
             'folder_id' => 'nullable|exists:folders,id',
-            'department_id' => 'nullable|exists:departments,id',
         ]);
 
-        $uploadedFile = $request->file('file');
-        $originalName = $uploadedFile->getClientOriginalName();
-        $mimeType = $uploadedFile->getClientMimeType();
-        $size = $uploadedFile->getSize();
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
 
-        // Simpan file ke disk public (storage/app/public/files)
-        $path = $uploadedFile->store('files', 'public');
+            $path = $file->store('files', 'public');
 
-        $user = $request->user();
+            $originalName = $file->getClientOriginalName();
+            $fileName = basename($path);
 
-        // Simpan informasi file ke database
-        $file = File::create([
-            'name' => $originalName,
-            'title' => $request->title,
-            'path' => $path,
-            'mime_type' => $mimeType,
-            'size' => $size,
-            'folder_id' => $request->folder_id,
-            'department_id' => $request->department_id ?? $user->department_id,
-            'user_id' => $user->id,
-        ]);
+            // Simpan ke database dengan menyertakan original_name
+            $fileItem = File::create([
+                'title' => $request->title,
+                'name' => $fileName,
+                'original_name' => $originalName,
+                'path' => $path,
+                'mime_type' => $file->getClientMimeType(),
+                'size' => $file->getSize(),
+                'department_id' => $request->department_id,
+                'folder_id' => $request->folder_id,
+                'user_id' => $request->user()->id,
+            ]);
 
-        return response()->json([
-            'message' => 'File berhasil diunggah',
-            'data' => $file
-        ], 201);
+            return response()->json([
+                'message' => 'File berhasil diunggah',
+                'data' => $fileItem
+            ], 201);
+        }
+
+        return response()->json(['message' => 'File tidak ditemukan'], 400);
     }
 
     /**
@@ -105,6 +107,29 @@ class FileController extends Controller
 
         return response()->json([
             'message' => 'File berhasil dihapus'
+        ], 200);
+    }
+
+    /**
+     * Menampilkan daftar semua file (atau difilter).
+     */
+    public function index(Request $request)
+    {
+        $query = File::with(['user', 'department', 'folder']);
+
+        if ($request->has('department_id')) {
+            $query->where('department_id', $request->department_id);
+        }
+
+        if ($request->has('folder_id')) {
+            $query->where('folder_id', $request->folder_id);
+        }
+
+        $files = $query->get();
+
+        return response()->json([
+            'message' => 'Berhasil mengambil daftar file',
+            'data' => $files
         ], 200);
     }
 }
