@@ -45,6 +45,10 @@ const handleLogout = async () => {
                         <span v-if="authStore.user" class="text-sm text-gray-700">
                             Halo, <span class="font-semibold">{{ authStore.user.name }}</span>
                         </span>
+                        <router-link to="/departments"
+                            class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium">
+                            Kelola Department
+                        </router-link>
                         <button @click="handleLogout"
                             class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition duration-150">
                             Keluar
@@ -59,10 +63,11 @@ const handleLogout = async () => {
             <div class="px-4 py-6 sm:px-0">
                 <div class="bg-white shadow-sm rounded-lg p-6">
                     <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Folder Anda</h2>
-                    
+
                     <div v-if="loading" class="text-gray-500">Memuat data...</div>
-                    
-                    <div v-else-if="folders.length === 0" class="text-gray-500 border-2 border-dashed border-gray-200 rounded-lg p-8 text-center">
+
+                    <div v-else-if="folders.length === 0"
+                        class="text-gray-500 border-2 border-dashed border-gray-200 rounded-lg p-8 text-center">
                         Belum ada folder yang tersedia.
                     </div>
 
