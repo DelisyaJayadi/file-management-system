@@ -45,7 +45,7 @@ export const useAuthStore = defineStore('auth', () => {
             const response = await api.post('/api/login', credentials);
 
             // Simpan token dan data user
-            setToken(response.data.token);
+            setToken(response.data.access_token);
             user.value = response.data.user;
 
             return { success: true };
@@ -70,7 +70,7 @@ export const useAuthStore = defineStore('auth', () => {
     // Fungsi Logout
     const logout = async () => {
         try {
-            await api.post('/api/v1/logout');
+            await api.post('/api/logout');
         } catch (error) {
             console.error('Logout error:', error);
         } finally {
