@@ -1,9 +1,30 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { useRouter } from 'vue-router';
+import fileService from '@/services/fileService';
+
+interface Folder {
+    id: number | string;
+    name: string;
+}
 
 const authStore = useAuthStore();
 const router = useRouter();
+
+const folders = ref<Folder[]>([]);
+const loading = ref(true);
+
+onMounted(async () => {
+    try {
+        const data = await fileService.getFolders();
+        folders.value = data;
+    } catch (error) {
+        console.error('Gagal memuat data folder:', error);
+    } finally {
+        loading.value = false;
+    }
+});
 
 const handleLogout = async () => {
     await authStore.logout();
@@ -36,11 +57,21 @@ const handleLogout = async () => {
         <!-- Main Content -->
         <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
             <div class="px-4 py-6 sm:px-0">
-                <div class="border-4 border-dashed border-gray-200 rounded-lg h-96 p-6 flex flex-col items-center justify-center bg-white shadow-sm">
-                    <h2 class="text-2xl font-semibold text-gray-700 mb-2">Selamat Datang di Dashboard</h2>
-                    <p class="text-gray-500 text-center max-w-md">
-                        Sistem manajemen file Anda berhasil terhubung dengan backend Laravel. Modul unggah file dan manajemen folder akan segera kita bangun di sini!
-                    </p>
+                <div class="bg-white shadow-sm rounded-lg p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-4">Daftar Folder Anda</h2>
+                    
+                    <div v-if="loading" class="text-gray-500">Memuat data...</div>
+                    
+                    <div v-else-if="folders.length === 0" class="text-gray-500 border-2 border-dashed border-gray-200 rounded-lg p-8 text-center">
+                        Belum ada folder yang tersedia.
+                    </div>
+
+                    <ul v-else class="divide-y divide-gray-200">
+                        <!-- Tampilkan list folder di sini -->
+                        <li v-for="folder in folders" :key="folder.id" class="py-3 flex justify-between items-center">
+                            <span class="text-gray-700 font-medium">{{ folder.name }}</span>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </main>
