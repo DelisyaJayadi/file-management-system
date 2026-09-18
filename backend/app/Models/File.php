@@ -18,4 +18,10 @@ class File extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    // Tambahkan relasi department ini
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(Department::class);
+    }
 }

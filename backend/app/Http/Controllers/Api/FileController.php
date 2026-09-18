@@ -19,6 +19,7 @@ class FileController extends Controller
             'file' => 'required|file|max:10240', // sesuaikan ukuran maksimal
             'department_id' => 'required|exists:departments,id',
             'folder_id' => 'nullable|exists:folders,id',
+            'original_name' => 'nullable|string|max:255',
         ]);
 
         if ($request->hasFile('file')) {
@@ -61,11 +62,13 @@ class FileController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'department_id' => 'nullable|exists:departments,id',
+            'original_name' => 'nullable|string|max:255',
         ]);
 
         $file->update([
             'title' => $request->title,
             'department_id' => $request->department_id ?? $file->department_id,
+            'original_name' => $request->original_name ?? $file->original_name,
         ]);
 
         return response()->json([
