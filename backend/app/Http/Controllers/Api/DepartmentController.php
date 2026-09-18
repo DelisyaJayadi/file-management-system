@@ -56,22 +56,19 @@ class DepartmentController extends Controller
     /**
      * Memperbarui departemen.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Department $department)
     {
-        $department = Department::findOrFail($id);
-
         $request->validate([
             'name' => 'required|string|max:255|unique:departments,name,' . $department->id,
+            'description' => 'nullable|string',
         ]);
 
-        $department->update([
-            'name' => $request->name,
-        ]);
+        $department->update($request->all());
 
         return response()->json([
-            'message' => 'Departemen berhasil diperbarui',
+            'message' => 'Department updated successfully',
             'data' => $department
-        ], 200);
+        ]);
     }
 
     /**
