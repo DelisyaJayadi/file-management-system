@@ -20,5 +20,13 @@ class UserSeeder extends Seeder
             'department_id' => $dept->id,
             'role' => 'administrator'
         ]);
+
+        User::create([
+            'name' => 'Viewer Demo',
+            'email' => 'viewer@example.com',
+            'password' => Hash::make('password123'),
+            'role' => 'viewer', 
+            'department_id' => 1
+        ]);
     }
 }

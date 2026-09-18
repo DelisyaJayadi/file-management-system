@@ -9,9 +9,9 @@ class DepartmentSeeder extends Seeder
 {
     public function run(): void
     {
-        Department::create([
-            'name' => 'IT & Development',
-            'description' => 'Departemen Teknologi Informasi'
-        ]);
+        Department::firstOrCreate(
+            ['name' => 'IT & Development'], 
+            ['description' => 'Departemen Teknologi Informasi'] 
+        );
     }
 }
