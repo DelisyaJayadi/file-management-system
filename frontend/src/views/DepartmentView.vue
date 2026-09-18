@@ -13,6 +13,12 @@ const newDepartmentName = ref('');
 const newDepartmentDesc = ref('');
 const isSubmitting = ref(false);
 
+// State untuk Edit Department
+const editingDepartmentId = ref<number | null>(null);
+const editDepartmentName = ref('');
+const editDepartmentDesc = ref('');
+const isUpdating = ref(false);
+
 const fetchDepartments = async () => {
     loading.value = true;
     try {
@@ -43,6 +49,40 @@ const handleCreateDepartment = async () => {
         alert('Gagal menambah department.');
     } finally {
         isSubmitting.value = false;
+    }
+};
+
+// Fungsi untuk mulai mengedit
+const startEdit = (dept: Department) => {
+    editingDepartmentId.value = dept.id;
+    editDepartmentName.value = dept.name;
+    editDepartmentDesc.value = dept.description || '';
+};
+
+// Fungsi untuk membatalkan edit
+const cancelEdit = () => {
+    editingDepartmentId.value = null;
+    editDepartmentName.value = '';
+    editDepartmentDesc.value = '';
+};
+
+// Fungsi untuk menyimpan perubahan update
+const handleUpdateDepartment = async (id: number) => {
+    if (!editDepartmentName.value.trim()) return;
+
+    isUpdating.value = true;
+    try {
+        await departmentService.updateDepartment(id, {
+            name: editDepartmentName.value,
+            description: editDepartmentDesc.value,
+        });
+        cancelEdit();
+        await fetchDepartments(); // Refresh list
+    } catch (error) {
+        console.error('Gagal memperbarui department:', error);
+        alert('Gagal memperbarui department.');
+    } finally {
+        isUpdating.value = false;
     }
 };
 
@@ -129,18 +169,45 @@ onMounted(() => {
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
-                            <tr v-for="dept in departments" :key="dept.id">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ dept.name
-                                    }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ dept.description || '-'
-                                    }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <button @click="handleDeleteDepartment(dept.id)"
-                                        class="text-red-600 hover:text-red-900 ml-4">
-                                        Hapus
-                                    </button>
-                                </td>
-                            </tr>
+                            <template v-for="dept in departments" :key="dept.id">
+                                <!-- Baris Normal / Mode Lihat -->
+                                <tr v-if="editingDepartmentId !== dept.id">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
+                                        dept.name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ dept.description ||
+                                        '-' }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                        <button @click="startEdit(dept)" class="text-indigo-600 hover:text-indigo-900">
+                                            Edit
+                                        </button>
+                                        <button @click="handleDeleteDepartment(dept.id)"
+                                            class="text-red-600 hover:text-red-900 ml-4">
+                                            Hapus
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Baris Mode Edit -->
+                                <tr v-else class="bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <input v-model="editDepartmentName" type="text" required
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-1" />
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                        <input v-model="editDepartmentDesc" type="text"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm border p-1" />
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                                        <button @click="handleUpdateDepartment(dept.id)" :disabled="isUpdating"
+                                            class="text-green-600 hover:text-green-900 font-semibold">
+                                            {{ isUpdating ? 'Menyimpan...' : 'Simpan' }}
+                                        </button>
+                                        <button @click="cancelEdit" class="text-gray-500 hover:text-gray-700 ml-2">
+                                            Batal
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
                         </tbody>
                     </table>
                 </div>
