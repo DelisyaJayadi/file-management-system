@@ -65,8 +65,19 @@ onMounted(() => {
 
 <template>
     <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div class="px-4 py-6 sm:px-0">
-            <h1 class="text-2xl font-bold text-gray-800 mb-6">Manajemen Department</h1>
+        <div>
+            <div class="px-4 py-6 sm:px-0 flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-800 mb-6">Manajemen Department</h1>
+                <!-- Tombol Kembali -->
+                <router-link to="/dashboard"
+                    class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition shadow-sm border border-gray-300">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                    </svg>
+                    Kembali ke Dashboard
+                </router-link>
+            </div>
 
             <!-- Form Tambah Department (Hanya untuk Admin) -->
             <div v-if="authStore.user" class="bg-white p-6 shadow-sm rounded-lg mb-6">
@@ -97,7 +108,8 @@ onMounted(() => {
 
                 <div v-if="loading" class="text-gray-500">Memuat data department...</div>
                 <div v-else-if="errorMessage" class="text-red-500">{{ errorMessage }}</div>
-                <div v-else-if="departments.length === 0" class="text-gray-500 border-2 border-dashed border-gray-200 rounded-lg p-6 text-center">
+                <div v-else-if="departments.length === 0"
+                    class="text-gray-500 border-2 border-dashed border-gray-200 rounded-lg p-6 text-center">
                     Belum ada data department.
                 </div>
 
@@ -105,15 +117,23 @@ onMounted(() => {
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Deskripsi</th>
-                                <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Nama</th>
+                                <th
+                                    class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Deskripsi</th>
+                                <th
+                                    class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             <tr v-for="dept in departments" :key="dept.id">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ dept.name }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ dept.description || '-' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ dept.name
+                                    }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ dept.description || '-'
+                                    }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                     <button @click="handleDeleteDepartment(dept.id)"
                                         class="text-red-600 hover:text-red-900 ml-4">

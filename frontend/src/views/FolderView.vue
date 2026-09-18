@@ -195,7 +195,20 @@ onMounted(async () => {
 
 <template>
     <div class="p-6 max-w-6xl mx-auto">
-        <h1 class="text-2xl font-bold mb-4">Manajemen File & Folder</h1>
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold mb-4">Manajemen File & Folder</h1>
+
+            <!-- Tombol Kembali -->
+            <router-link to="/dashboard"
+                class="inline-flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium rounded-lg transition shadow-sm border border-gray-300">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18">
+                    </path>
+                </svg>
+                Kembali ke Dashboard
+            </router-link>
+        </div>
 
         <!-- Notifikasi Error -->
         <div v-if="errorMessage" class="bg-red-100 text-red-700 p-3 rounded mb-4 flex justify-between items-center">
@@ -213,7 +226,6 @@ onMounted(async () => {
             </select>
         </div>
 
-        <!-- Form Create Folder & Upload File (Hanya untuk Administrator) -->
         <!-- Form Create Folder & Upload File (Hanya untuk Administrator) -->
         <div v-if="isAdmin" class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <!-- Buat Folder -->
